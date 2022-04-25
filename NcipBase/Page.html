@@ -1,0 +1,497 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--
+        ===
+        This comment should NOT be removed.
+
+        Charisma v2.0.0
+
+        Copyright 2012-2014 Muhammad Usman
+        Licensed under the Apache License v2.0
+        http://www.apache.org/licenses/LICENSE-2.0
+
+        http://usman.it
+        http://twitter.com/halalit_usman
+        ===
+    -->
+    <meta charset="utf-8">
+    <title>База данных объектов права промышленной собственности</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- The styles -->
+    <link id="bs-css" href="css/bootstrap-cerulean.min.css" rel="stylesheet">
+
+    <link href="css/charisma-app.css" rel="stylesheet">
+    <link href='bower_components/fullcalendar/dist/fullcalendar.css' rel='stylesheet'>
+    <link href='bower_components/fullcalendar/dist/fullcalendar.print.css' rel='stylesheet' media='print'>
+    <link href='bower_components/chosen/chosen.min.css' rel='stylesheet'>
+    <link href='bower_components/colorbox/example3/colorbox.css' rel='stylesheet'>
+    <link href='bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
+    <link href='bower_components/bootstrap-tour/build/css/bootstrap-tour.min.css' rel='stylesheet'>
+    <link href='css/jquery.noty.css' rel='stylesheet'>
+    <link href='css/noty_theme_default.css' rel='stylesheet'>
+    <link href='css/elfinder.min.css' rel='stylesheet'>
+    <link href='css/elfinder.theme.css' rel='stylesheet'>
+    <link href='css/jquery.iphone.toggle.css' rel='stylesheet'>
+    <link href='css/uploadify.css' rel='stylesheet'>
+    <link href='css/animate.min.css' rel='stylesheet'>
+    <link href='css/default.css' rel='stylesheet'>
+    <!-- jQuery -->
+    <script src="bower_components/jquery/jquery.min.js"></script>
+
+    <script language="javascript" type="text/javascript">
+        function clearText(field) {
+            if (field.defaultValue == field.value) field.value = '';
+            else if (field.value == '') field.value = field.defaultValue;
+        }
+
+        function toLink(src) {
+            window.open(src, '_blank')
+            //location = src;
+        }
+
+        function post(varHash) { //по-моему, передавать аргументы хешем удобнее, чем массивом
+            var form = document.createElement("form"), tmp;
+            form.action = self.location;
+            form.method = "post";
+            for (var param in varHash) {
+                tmp = document.createElement("input");
+                tmp.type = "hidden";
+                tmp.name = param;
+                tmp.value = varHash[param];
+                form.appendChild(tmp);
+            }
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        function tableOrdering(varHash) {
+            var direction;
+            if (varHash == "newan") {
+                if ("asc" == "asc") {
+                    direction = "desc";
+                }
+                else {
+                    direction = "asc";
+                }
+            }
+            else direction = "asc";
+            post({ order: varHash, dir: direction, nazvanie: '', sel_naz: '1', patent: '', d_publ_p: '', an: '', mpk: '', patob: 'пет', sel_pat: '1', });
+
+        }
+    </script>
+    <!-- The fav icon -->
+    <link rel="shortcut icon" href="img/favicon.ico">
+</head>
+
+<body>
+    <!-- topbar starts -->
+    <div class="navbar navbar-default" role="navigation">
+
+        <div class="navbar-inner">
+            <button type="button" class="navbar-toggle pull-left animated flip">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="">
+                <img alt="" src="img/logo.png" class="hidden-xs" />
+                <span>НЦИС</span>
+            </a>
+        </div>
+    </div>
+    <!-- topbar ends -->
+    <div class="ch-container">
+        <div class="row">
+
+            <!-- left menu starts -->
+            <div class="col-sm-2 col-lg-2">
+                <div class="sidebar-nav">
+                    <div class="nav-canvas">
+                        <div class="nav-sm nav nav-stacked">
+
+                        </div>
+                        <ul class="nav nav-pills nav-stacked main-menu">
+                            <li class="nav-header">Базы данных</li>
+                            <li><a class="ajax-link" href="index.php?pref=inv&lng=ru&page=1"><i class="glyphicon glyphicon-chevron-right"></i><span> Изобретения</span></a></li>
+                            <li><a class="ajax-link" href="index.php?pref=mod&lng=ru&page=1"><i class="glyphicon glyphicon-chevron-right"></i><span> Полезные модели</span></a></li>
+                            <li><a class="ajax-link" href="index.php?pref=prom&lng=ru&page=1"><i class="glyphicon glyphicon-chevron-right"></i><span> Промышленные образцы</span></a></li>
+                            <li><a class="ajax-link" href="index.php?pref=sort&lng=ru&page=1"><i class="glyphicon glyphicon-chevron-right"></i><span> Сорта растений</span></a></li>
+                            <li class="active"><a class="ajax-link" href="index.php?pref=tz&lng=ru&page=1"><i class="glyphicon glyphicon-chevron-right"></i><span> Товарные знаки (ТЗ)</span></a></li>
+                            <li><a class="ajax-link" href="index.php?pref=tz_bypass&lng=ru&page=1"><i class="glyphicon glyphicon-chevron-right"></i><span> Заявки на регистрацию ТЗ</span></a></li>
+                            <li><a class="ajax-link" href="index.php?pref=tim&lng=ru&page=1"><i class="glyphicon glyphicon-chevron-right"></i><span> Топологии ИМС</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!--/span-->
+            <!-- left menu ends -->
+
+            <noscript>
+                <div class="alert alert-block col-md-12">
+                    <h4 class="alert-heading">Warning!</h4>
+
+                    <p>
+                        You need to have <a href="http://en.wikipedia.org/wiki/JavaScript" target="_blank">JavaScript</a>
+                        enabled to use this site.
+                    </p>
+                </div>
+            </noscript>
+
+            <div id="content" class="col-lg-10 col-sm-10">
+                <!-- content starts -->
+                <div>
+                </div>
+                <div class="row">
+                    <div class="box col-md-12">
+                        <div class="box-inner">
+                            <div class="box-header well">
+                                <h2><i class="glyphicon glyphicon-list"></i> Просмотр найденных документов</h2>
+                                <div class="box-icon"><a href="#" class="btn btn-minimize btn-round btn-default"><i class="glyphicon glyphicon-chevron-up"></i></a></div>
+                            </div>
+                            <div class="box-content">
+
+                                <table class="table table-striped table-bordered bootstrap-datatable">
+                                    <thead>
+                                        <tr>
+                                            <th width="10">№</th>
+                                            <th width="10">Номер заявки</th>
+                                            <th width="10">Номер регистрации</th>
+
+
+                                            <th>Изображение / наименование товарного знака</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr style="CURSOR:pointer;" onClick="toLink('?pref=tz&amp;lng=ru&amp;page=3&target=8766');">
+
+                                            <td>1</td>
+                                            <td nowrap="nowrap">       507</td>
+
+                                            <td nowrap="nowrap">      5062</td>
+
+
+                                            <td>
+                                                <img src="getimage.php?x=150&pref=tz&image=8766" border="0" />
+                                            </td>
+                                        </tr>
+
+                                        <tr style="CURSOR:pointer;" onClick="toLink('?pref=tz&amp;lng=ru&amp;page=3&target=2193');">
+
+                                            <td>2</td>
+                                            <td nowrap="nowrap">      3178</td>
+
+                                            <td nowrap="nowrap">      6585</td>
+
+
+                                            <td>
+                                                <img src="getimage.php?x=150&pref=tz&image=2193" border="0" />
+                                            </td>
+                                        </tr>
+
+                                        <tr style="CURSOR:pointer;" onClick="toLink('?pref=tz&amp;lng=ru&amp;page=3&target=2194');">
+
+                                            <td>3</td>
+                                            <td nowrap="nowrap">      3179</td>
+
+                                            <td nowrap="nowrap">      6586</td>
+
+
+                                            <td>
+                                                <img src="getimage.php?x=150&pref=tz&image=2194" border="0" />
+                                            </td>
+                                        </tr>
+
+                                        <tr style="CURSOR:pointer;" onClick="toLink('?pref=tz&amp;lng=ru&amp;page=3&target=1083');">
+
+                                            <td>4</td>
+                                            <td nowrap="nowrap">    950849</td>
+
+                                            <td nowrap="nowrap">      7133</td>
+
+
+                                            <td>
+                                                <img src="getimage.php?x=150&pref=tz&image=1083" border="0" />
+                                            </td>
+                                        </tr>
+
+                                        <tr style="CURSOR:pointer;" onClick="toLink('?pref=tz&amp;lng=ru&amp;page=3&target=2669');">
+
+                                            <td>5</td>
+                                            <td nowrap="nowrap">    951150</td>
+
+                                            <td nowrap="nowrap">      8334</td>
+
+
+                                            <td>
+                                                <img src="getimage.php?x=150&pref=tz&image=2669" border="0" />
+                                            </td>
+                                        </tr>
+
+                                        <tr style="CURSOR:pointer;" onClick="toLink('?pref=tz&amp;lng=ru&amp;page=3&target=2670');">
+
+                                            <td>6</td>
+                                            <td nowrap="nowrap">    951151</td>
+
+                                            <td nowrap="nowrap">      8335</td>
+
+
+                                            <td>
+                                                <img src="getimage.php?x=150&pref=tz&image=2670" border="0" />
+                                            </td>
+                                        </tr>
+
+                                        <tr style="CURSOR:pointer;" onClick="toLink('?pref=tz&amp;lng=ru&amp;page=3&target=2671');">
+
+                                            <td>7</td>
+                                            <td nowrap="nowrap">    951152</td>
+
+                                            <td nowrap="nowrap">      8336</td>
+
+
+                                            <td>
+                                                <img src="getimage.php?x=150&pref=tz&image=2671" border="0" />
+                                            </td>
+                                        </tr>
+
+                                        <tr style="CURSOR:pointer;" onClick="toLink('?pref=tz&amp;lng=ru&amp;page=3&target=2672');">
+
+                                            <td>8</td>
+                                            <td nowrap="nowrap">    951153</td>
+
+                                            <td nowrap="nowrap">      8337</td>
+
+
+                                            <td>
+                                                <img src="getimage.php?x=150&pref=tz&image=2672" border="0" />
+                                            </td>
+                                        </tr>
+
+                                        <tr style="CURSOR:pointer;" onClick="toLink('?pref=tz&amp;lng=ru&amp;page=3&target=2673');">
+
+                                            <td>9</td>
+                                            <td nowrap="nowrap">    951154</td>
+
+                                            <td nowrap="nowrap">      8338</td>
+
+
+                                            <td>
+                                                <img src="getimage.php?x=150&pref=tz&image=2673" border="0" />
+                                            </td>
+                                        </tr>
+
+                                        <tr style="CURSOR:pointer;" onClick="toLink('?pref=tz&amp;lng=ru&amp;page=3&target=2674');">
+
+                                            <td>10</td>
+                                            <td nowrap="nowrap">    951155</td>
+
+                                            <td nowrap="nowrap">      8339</td>
+
+
+                                            <td>
+                                                <img src="getimage.php?x=150&pref=tz&image=2674" border="0" />
+                                            </td>
+                                        </tr>
+
+                                        <tr style="CURSOR:pointer;" onClick="toLink('?pref=tz&amp;lng=ru&amp;page=3&target=3979');">
+
+                                            <td>11</td>
+                                            <td nowrap="nowrap">    951484</td>
+
+                                            <td nowrap="nowrap">      7749</td>
+
+
+                                            <td>
+                                                <img src="getimage.php?x=150&pref=tz&image=3979" border="0" />
+                                            </td>
+                                        </tr>
+
+                                        <tr style="CURSOR:pointer;" onClick="toLink('?pref=tz&amp;lng=ru&amp;page=3&target=13748');">
+
+                                            <td>12</td>
+                                            <td nowrap="nowrap">    971288</td>
+
+                                            <td nowrap="nowrap">     10808</td>
+
+
+                                            <td>
+                                                <img src="getimage.php?x=150&pref=tz&image=13748" border="0" />
+                                            </td>
+                                        </tr>
+
+                                        <tr style="CURSOR:pointer;" onClick="toLink('?pref=tz&amp;lng=ru&amp;page=3&target=16138');">
+
+                                            <td>13</td>
+                                            <td nowrap="nowrap">  20001374</td>
+
+                                            <td nowrap="nowrap">     17344</td>
+
+
+                                            <td>
+                                                <img src="getimage.php?x=150&pref=tz&image=16138" border="0" />
+                                            </td>
+                                        </tr>
+
+                                        <tr style="CURSOR:pointer;" onClick="toLink('?pref=tz&amp;lng=ru&amp;page=3&target=16139');">
+
+                                            <td>14</td>
+                                            <td nowrap="nowrap">  20001375</td>
+
+                                            <td nowrap="nowrap">     17345</td>
+
+
+                                            <td>
+                                                <img src="getimage.php?x=150&pref=tz&image=16139" border="0" />
+                                            </td>
+                                        </tr>
+
+                                        <tr style="CURSOR:pointer;" onClick="toLink('?pref=tz&amp;lng=ru&amp;page=3&target=22355');">
+
+                                            <td>15</td>
+                                            <td nowrap="nowrap">  20030573</td>
+
+                                            <td nowrap="nowrap">     17914</td>
+
+
+                                            <td>
+                                                <img src="getimage.php?x=150&pref=tz&image=22355" border="0" />
+                                            </td>
+                                        </tr>
+
+                                        <tr style="CURSOR:pointer;" onClick="toLink('?pref=tz&amp;lng=ru&amp;page=3&target=22479');">
+
+                                            <td>16</td>
+                                            <td nowrap="nowrap">  20030712</td>
+
+                                            <td nowrap="nowrap">     23194</td>
+
+
+                                            <td>
+                                                <img src="getimage.php?x=150&pref=tz&image=22479" border="0" />
+                                            </td>
+                                        </tr>
+
+                                        <tr style="CURSOR:pointer;" onClick="toLink('?pref=tz&amp;lng=ru&amp;page=3&target=29946');">
+
+                                            <td>17</td>
+                                            <td nowrap="nowrap">  20042256</td>
+
+                                            <td nowrap="nowrap">     24488</td>
+
+
+                                            <td>
+                                                <img src="getimage.php?x=150&pref=tz&image=29946" border="0" />
+                                            </td>
+                                        </tr>
+
+                                        <tr style="CURSOR:pointer;" onClick="toLink('?pref=tz&amp;lng=ru&amp;page=3&target=30842');">
+
+                                            <td>18</td>
+                                            <td nowrap="nowrap">  20043164</td>
+
+                                            <td nowrap="nowrap">     25425</td>
+
+
+                                            <td>
+                                                <img src="getimage.php?x=150&pref=tz&image=30842" border="0" />
+                                            </td>
+                                        </tr>
+
+                                        <tr style="CURSOR:pointer;" onClick="toLink('?pref=tz&amp;lng=ru&amp;page=3&target=30881');">
+
+                                            <td>19</td>
+                                            <td nowrap="nowrap">  20043198</td>
+
+                                            <td nowrap="nowrap">     25205</td>
+
+
+                                            <td>
+                                                <img src="getimage.php?x=150&pref=tz&image=30881" border="0" />
+                                            </td>
+                                        </tr>
+
+                                        <tr style="CURSOR:pointer;" onClick="toLink('?pref=tz&amp;lng=ru&amp;page=3&target=42387');">
+
+                                            <td>20</td>
+                                            <td nowrap="nowrap">  20073300</td>
+
+                                            <td nowrap="nowrap">     35351</td>
+
+
+                                            <td>
+                                                <img src="getimage.php?x=150&pref=tz&image=42387" border="0" />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+
+                                <ul class="pagination">
+                                    <li class="prev disabled" onClick="post({order:'newan',dir:'asc',cur_page:'1',nazvanie:'',sel_naz:'1',patent:'',d_publ_p:'',an:'',mpk:'',patob:'пет',sel_pat:'1',})"><a href="#">Первая</a></li>
+                                    <li class="prev disabled" onClick="post({order:'newan',dir:'asc',cur_page:'0',nazvanie:'',sel_naz:'1',patent:'',d_publ_p:'',an:'',mpk:'',patob:'пет',sel_pat:'1',})"><a href="#">&larr; Назад</a></li>
+                                    <li class="active" onClick="post({order:'newan',dir:'asc',cur_page:'1',nazvanie:'',sel_naz:'1',patent:'',d_publ_p:'',an:'',mpk:'',patob:'пет',sel_pat:'1',})"><a href="#">1</a></li>
+                                    <li onClick="post({order:'newan',dir:'asc',cur_page:'2',nazvanie:'',sel_naz:'1',patent:'',d_publ_p:'',an:'',mpk:'',patob:'пет',sel_pat:'1',})"><a href="#">2</a></li>
+                                    <li onClick="post({order:'newan',dir:'asc',cur_page:'3',nazvanie:'',sel_naz:'1',patent:'',d_publ_p:'',an:'',mpk:'',patob:'пет',sel_pat:'1',})"><a href="#">3</a></li>
+                                    <li onClick="post({order:'newan',dir:'asc',cur_page:'2',nazvanie:'',sel_naz:'1',patent:'',d_publ_p:'',an:'',mpk:'',patob:'пет',sel_pat:'1',})"><a href="#">Вперед &rarr;</a></li>
+                                    <li onClick="post({order:'newan',dir:'asc',cur_page:'3',nazvanie:'',sel_naz:'1',patent:'',d_publ_p:'',an:'',mpk:'',patob:'пет',sel_pat:'1',})"><a href="#">Последняя</a></li>
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- content ends -->
+            </div><!--/#content.col-md-0-->
+        </div><!--/fluid-row-->
+        <hr>
+        <footer class="row">
+            <p class="col-md-9 col-sm-9 col-xs-12 copyright"></p>
+            <p class="col-md-3 col-sm-3 col-xs-12 powered-by">&copy; <a href="https://ncip.by">Национальный центр интеллектуальной собственности</a></p>
+        </footer>
+
+    </div><!--/.fluid-container-->
+    <!-- external javascript -->
+
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- library for cookie management -->
+    <script src="js/jquery.cookie.js"></script>
+    <!-- calender plugin -->
+    <script src='bower_components/moment/min/moment.min.js'></script>
+    <script src='bower_components/fullcalendar/dist/fullcalendar.min.js'></script>
+    <!-- data table plugin -->
+    <script src='js/jquery.dataTables.min.js'></script>
+
+    <!-- select or dropdown enhancer -->
+    <script src="bower_components/chosen/chosen.jquery.min.js"></script>
+    <!-- plugin for gallery image view -->
+    <script src="bower_components/colorbox/jquery.colorbox-min.js"></script>
+    <!-- notification plugin -->
+    <script src="js/jquery.noty.js"></script>
+    <!-- library for making tables responsive -->
+    <script src="bower_components/responsive-tables/responsive-tables.js"></script>
+    <!-- tour plugin -->
+    <script src="bower_components/bootstrap-tour/build/js/bootstrap-tour.min.js"></script>
+    <!-- star rating plugin -->
+    <script src="js/jquery.raty.min.js"></script>
+    <!-- for iOS style toggle switch -->
+    <script src="js/jquery.iphone.toggle.js"></script>
+    <!-- autogrowing textarea plugin -->
+    <script src="js/jquery.autogrow-textarea.js"></script>
+    <!-- multiple file upload plugin -->
+    <script src="js/jquery.uploadify-3.1.min.js"></script>
+    <!-- history.js for cross-browser state change on ajax -->
+    <script src="js/jquery.history.js"></script>
+    <!-- application script for Charisma demo -->
+    <script src="js/charisma.js"></script>
+
+
+</body>
+</html>
